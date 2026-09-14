@@ -111,6 +111,12 @@
     text-wrap: balance;
   }
 
+  /* Form fields draw their own focus ring; everything else interactive gets the brand one. */
+  :where(a, button, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--violet);
+    outline-offset: 3px;
+  }
+
   ::selection {
     background: color-mix(in oklab, var(--violet) 55%, transparent);
     color: #fff;
@@ -139,133 +145,7 @@
   }
 }
 
-/* Aurora background field, mirrors the reference's soft violet/cyan haze */
-@utility aurora {
-  position: relative;
-  isolation: isolate;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -20% -10%;
-    z-index: -2;
-    background:
-      radial-gradient(70% 60% at 25% 15%, oklch(0.58 0.24 288 / 0.85), transparent 70%),
-      radial-gradient(65% 55% at 75% 5%, oklch(0.6 0.22 300 / 0.65), transparent 70%),
-      radial-gradient(55% 50% at 60% 55%, oklch(0.6 0.16 250 / 0.5), transparent 70%),
-      radial-gradient(70% 60% at 10% 80%, oklch(0.5 0.2 292 / 0.5), transparent 75%),
-      radial-gradient(50% 40% at 90% 70%, oklch(0.55 0.15 215 / 0.3), transparent 70%);
-    filter: blur(40px);
-    animation: aurora-drift 22s ease-in-out infinite alternate;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image:
-      linear-gradient(to right, oklch(1 0 0 / 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(1 0 0 / 0.035) 1px, transparent 1px);
-    background-size: 76px 76px;
-    mask-image: radial-gradient(80% 70% at 50% 30%, #000 30%, transparent 100%);
-  }
-}
-
-@keyframes aurora-drift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(-3%, 2%, 0) scale(1.08);
-  }
-}
-
-/* Soft ambient haze behind every section, like the reference's continuous field */
-@utility ambient-field {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(50% 35% at 82% 10%, oklch(0.58 0.21 290 / 0.4), transparent 72%),
-    radial-gradient(55% 35% at 8% 42%, oklch(0.54 0.19 292 / 0.34), transparent 72%),
-    radial-gradient(50% 32% at 88% 70%, oklch(0.58 0.15 225 / 0.28), transparent 72%),
-    radial-gradient(60% 35% at 28% 96%, oklch(0.55 0.2 295 / 0.3), transparent 72%);
-}
-
-@utility glow-fade {
-  background: linear-gradient(to bottom, transparent, var(--background) 92%);
-}
-
-@utility eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: oklch(1 0 0 / 0.55);
-
-  &::before {
-    content: "";
-    width: 2.25rem;
-    height: 1px;
-    background: linear-gradient(to right, var(--ember), oklch(1 0 0 / 0.15));
-  }
-}
-
-@utility grad-text {
-  background: linear-gradient(100deg, var(--violet) 0%, oklch(0.7 0.16 265) 45%, var(--cyan) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility card-glass {
-  position: relative;
-  border-radius: var(--radius);
-  border: 1px solid oklch(1 0 0 / 0.08);
-  background: linear-gradient(160deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.02));
-  backdrop-filter: blur(14px);
-  transition:
-    transform 0.5s var(--ease-out-expo),
-    border-color 0.4s ease,
-    background 0.4s ease,
-    box-shadow 0.5s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    border-color: oklch(1 0 0 / 0.2);
-    background: linear-gradient(160deg, oklch(1 0 0 / 0.1), oklch(1 0 0 / 0.03));
-    box-shadow: 0 24px 60px -30px oklch(0.55 0.24 285 / 0.8);
-  }
-}
-
-@utility pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 999px;
-  border: 1px solid oklch(1 0 0 / 0.12);
-  background: oklch(1 0 0 / 0.04);
-  padding: 0.5rem 0.95rem;
-  font-size: 0.8125rem;
-  color: oklch(1 0 0 / 0.72);
-  transition:
-    color 0.3s ease,
-    border-color 0.3s ease,
-    background 0.3s ease;
-
-  &:hover {
-    color: #fff;
-    border-color: oklch(1 0 0 / 0.28);
-    background: oklch(1 0 0 / 0.08);
-  }
-}
-
+/* Solid violet keeps white label text above 4.5:1 in both states. */
 @utility btn-primary {
   display: inline-flex;
   align-items: center;
@@ -276,21 +156,17 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(100deg, oklch(0.53 0.23 288), oklch(0.6 0.21 300));
-  box-shadow: 0 18px 40px -18px oklch(0.55 0.24 285 / 0.95);
+  background: oklch(0.5 0.21 288);
   transition:
-    transform 0.35s var(--ease-out-expo),
-    box-shadow 0.35s ease,
-    filter 0.35s ease;
+    background-color 0.3s ease,
+    transform 0.35s var(--ease-out-expo);
 
   &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.08);
-    box-shadow: 0 24px 55px -18px oklch(0.55 0.24 285 / 1);
+    background: oklch(0.55 0.21 288);
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(1px);
   }
 }
 
@@ -307,13 +183,11 @@
   border: 1px solid oklch(1 0 0 / 0.16);
   background: oklch(1 0 0 / 0.03);
   transition:
-    transform 0.35s var(--ease-out-expo),
-    border-color 0.35s ease,
-    background 0.35s ease,
-    color 0.35s ease;
+    border-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
     color: #fff;
     border-color: oklch(1 0 0 / 0.4);
     background: oklch(1 0 0 / 0.08);
@@ -326,17 +200,109 @@
   background: linear-gradient(to right, oklch(1 0 0 / 0.18), oklch(1 0 0 / 0.02));
 }
 
+/* Paired with <Reveal>: visible by default, hidden only while off screen below the
+   fold. Each role arrives differently: blocks rise, large blocks only fade, and the
+   gate's own statements wipe in from the left, like an approval being granted. */
 @utility reveal {
-  opacity: 0;
-  transform: translateY(26px);
   transition:
-    opacity 0.9s var(--ease-out-expo),
-    transform 0.9s var(--ease-out-expo);
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo),
+    clip-path 0.9s var(--ease-out-expo);
 
-  &[data-visible="true"] {
+  &[data-hidden="true"] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  &[data-variant="fade"][data-hidden="true"] {
+    transform: none;
+  }
+
+  /* The wipe clips the child, never the observed element itself: Chrome's
+     IntersectionObserver honours the target's own clip-path, so a fully clipped
+     target would never count as on screen and would stay hidden forever. The
+     inset overhangs the box so descenders and focus rings are never cut. */
+  &[data-variant="wipe"][data-hidden="true"] {
     opacity: 1;
     transform: none;
   }
+
+  &[data-variant="wipe"] > * {
+    clip-path: inset(-0.1em -0.1em -0.3em -0.1em);
+    transition: clip-path 0.9s var(--ease-out-expo);
+    transition-delay: inherit;
+  }
+
+  &[data-variant="wipe"][data-hidden="true"] > * {
+    clip-path: inset(-0.1em 100% -0.3em -0.1em);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The approval sequence, the page's one authored moment. It runs once on load,
+   in CSS only, so it needs no JS: the five method steps in the hero light up in
+   order, the Curadoria chip is approved before the flow reaches Entrega, and in
+   the same beat "aprovação humana" is underlined in the headline. Every
+   keyframe animates *from* a start state, so the resting style is the final one.
+   ------------------------------------------------------------------------- */
+@keyframes flow-step {
+  from {
+    color: oklch(1 0 0 / 0.45);
+  }
+}
+
+@keyframes gate-approve {
+  0% {
+    border-color: oklch(0.62 0.19 40 / 0.25);
+    background-color: oklch(0.62 0.19 40 / 0);
+  }
+  55% {
+    border-color: var(--ember);
+    background-color: oklch(0.62 0.19 40 / 0.24);
+  }
+}
+
+@keyframes underline-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@utility flow-step {
+  animation: flow-step 0.5s ease-out both;
+}
+
+@utility gate-approve {
+  animation: gate-approve 1.1s var(--ease-out-expo) both;
+}
+
+@utility gate-underline {
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0.25em;
+    bottom: 0.02em;
+    height: 0.06em;
+    background: var(--ember);
+    transform-origin: left;
+    animation: underline-draw 0.8s var(--ease-out-expo) 1.35s both;
+  }
+}
+
+/* Hero copy below the headline; the h1 itself never animates, so LCP is not delayed. */
+@utility rise-in {
+  animation: rise-in 0.8s var(--ease-out-expo) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -344,11 +310,12 @@
     scroll-behavior: auto;
   }
   .reveal {
-    opacity: 1 !important;
-    transform: none !important;
     transition: none !important;
   }
-  .aurora::before {
+  .flow-step,
+  .gate-approve,
+  .rise-in,
+  .gate-underline::after {
     animation: none !important;
   }
 }

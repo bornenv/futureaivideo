@@ -7,16 +7,14 @@ import {
   About,
   Services,
   Method,
-  Technology,
-  Research,
-  Pillars,
   Ethics,
+  Technology,
   FinalCta,
 } from "@/components/site/sections";
 
 const TITLE = "Future AI Video Labs | IA para Produção Audiovisual";
 const DESCRIPTION =
-  "Produção audiovisual potencializada por Inteligência Artificial. Criamos vídeos, campanhas, conteúdos e experiências com IA generativa, criatividade e tecnologia.";
+  "Produção audiovisual com IA generativa e curadoria humana. Vídeos corporativos, campanhas, treinamento e conteúdo de marca, com aprovação antes de cada entrega.";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -48,24 +46,19 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="relative min-h-screen bg-background">
-      <div className="ambient-field" aria-hidden="true" />
+    <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="relative z-10">
+      <main>
         <Hero />
         <About />
-        <Services />
-        <Method />
-        <Technology />
         <Showcase />
-        <Research />
-        <Pillars />
+        <Services />
+        <Technology />
+        <Method />
         <Ethics />
         <FinalCta />
       </main>
-      <div className="relative z-10">
-        <SiteFooter />
-      </div>
+      <SiteFooter />
     </div>
   );
 }
