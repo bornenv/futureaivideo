@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { InteractiveBackground } from "@/components/site/background/InteractiveBackground";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Showcase } from "@/components/site/Showcase";
@@ -36,9 +37,12 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+// No background on this wrapper: the fixed InteractiveBackground sits at -z-10 and
+// anything painted here would cover it.
 function Index() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
+      <InteractiveBackground />
       <SiteHeader />
       <main>
         <Hero />

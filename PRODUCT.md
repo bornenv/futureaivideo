@@ -59,7 +59,8 @@ Consequência para trabalhos futuros: velocidade e escala são efeitos, não a t
 - Nome: **Future AI Video Labs**. O header e o rodapé usam o logo em `public/brand/logo.webp` (originais em `public/assets/`); com essa troca, o descritor "AI Video Studio" deixou de aparecer no header.
 - Contato público: `daniel.reis@futureai.consulting` (também o `email` no JSON-LD de Organization).
 - Idioma e voz: português do Brasil, primeira pessoa do plural, afirmativa e sóbria. Sem exclamação, sem jargão de growth, sem promessa numérica.
-- Visual, por decisão do usuário em 2026-09-11: a paleta OKLCH e as fontes Outfit/Manrope ficam; o visual genérico de "startup de IA" — texto em gradiente, eyebrows, aurora e brilhos, vidro, numeração decorativa — foi removido e não deve voltar. O sistema vive em `src/styles.css`; não existe DESIGN.md.
+- Visual: a paleta OKLCH e as fontes Outfit/Manrope ficam; texto em gradiente, eyebrows, vidro e numeração decorativa foram removidos em 2026-09-11 e não devem voltar.
+- Fundo, por decisão do usuário em 2026-09-14: o mesmo fundo interativo do site Future AI Insights (`sitefuture`) — malha líquida em WebGL, grade técnica, partículas e granulação —, em `src/components/site/background/`. Ele substitui a aurora antiga e é o único fundo da página: não criar brilhos por seção. O sistema vive em `src/styles.css`; não existe DESIGN.md.
 
 ## Evidence on Hand
 

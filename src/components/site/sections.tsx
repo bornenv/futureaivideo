@@ -114,7 +114,7 @@ function HeroReel() {
         </button>
       </div>
       <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm">
-        <span className="text-white/70">{HERO_REEL.title} · projeto de cliente</span>
+        <span className="text-white/85">{HERO_REEL.title} · projeto de cliente</span>
         <a
           href="#portfolio"
           className="text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline"
@@ -128,17 +128,17 @@ function HeroReel() {
 
 export function Hero() {
   return (
-    <section id="top" className="relative">
+    <section id="top" data-dense className="relative">
       <div className="container-x pb-20 pt-36 md:pb-28 md:pt-44">
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
           <div>
             <h1 className="max-w-[20ch] text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.035em] md:text-[3.6rem] lg:text-[3.4rem] xl:text-[4rem]">
-              <span className="text-white/60">Vídeo com IA generativa.</span> Nenhuma peça sai sem{" "}
+              <span className="text-white/70">Vídeo com IA generativa.</span> Nenhuma peça sai sem{" "}
               <span className="gate-underline">aprovação humana.</span>
             </h1>
 
             <p
-              className="rise-in mt-8 max-w-xl text-base leading-relaxed text-white/70 md:text-lg"
+              className="rise-in mt-8 max-w-xl text-base leading-relaxed text-white/85 md:text-lg"
               style={{ animationDelay: "120ms" }}
             >
               Mais vídeo, em mais formatos, canais e idiomas, sem ampliar sua equipe. Cada peça
@@ -160,7 +160,7 @@ export function Hero() {
                     </span>
                   ) : (
                     <span
-                      className="flow-step text-white/80"
+                      className="flow-step text-white/85"
                       style={{ animationDelay: `${flowAt(i)}s` }}
                     >
                       {step}
@@ -220,7 +220,7 @@ export function About() {
             Criatividade e execução
             <br className="hidden md:block" /> em produção audiovisual
           </h2>
-          <p className="text-base leading-relaxed text-white/70">
+          <p className="text-base leading-relaxed text-white/80">
             O que orienta cada projeto, da ideia ao vídeo entregue.
           </p>
         </div>
@@ -230,7 +230,7 @@ export function About() {
             <Reveal key={m.title} delay={i * 90}>
               <div className="border-t border-white/15 pt-8">
                 <h3 className="text-xl font-semibold md:text-2xl">{m.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-white/70">{m.desc}</p>
+                <p className="mt-4 text-sm leading-relaxed text-white/80">{m.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -433,7 +433,7 @@ export function Method() {
   };
 
   return (
-    <section id="metodologia" className="relative py-24 md:py-32">
+    <section id="metodologia" data-dense className="relative py-24 md:py-32">
       <div className="container-x">
         <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
           Da ideia ao vídeo

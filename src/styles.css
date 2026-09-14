@@ -92,8 +92,9 @@
     background-color: var(--background);
   }
 
+  /* No background on body: with html also painted, body would render as an ordinary
+     block over the fixed -z-10 InteractiveBackground and hide it. html carries the colour. */
   body {
-    background-color: var(--background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01";
@@ -198,6 +199,18 @@
   height: 1px;
   width: 100%;
   background: linear-gradient(to right, oklch(1 0 0 / 0.18), oklch(1 0 0 / 0.02));
+}
+
+/* Background layers used by <InteractiveBackground>: a technical grid and film grain. */
+@utility tech-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
 }
 
 /* Paired with <Reveal>: visible by default, hidden only while off screen below the

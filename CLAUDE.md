@@ -51,7 +51,15 @@ Tailwind v4, configured entirely in `src/styles.css` (no `tailwind.config.js`). 
 
 - OKLCH CSS variables on `:root` for a **dark-only** palette, plus brand tokens `--violet`, `--cyan`, `--ember`, `--surface`, `--surface-strong`, exposed to Tailwind through `@theme inline`.
 - Fonts: `font-display` (Outfit) for headings, `font-sans` (Manrope) for body, loaded from Google Fonts in `__root.tsx`.
-- Custom `@utility` classes: `container-x`, `btn-primary`, `btn-ghost`, `hairline`, `reveal`. The page deliberately has **no** gradient text, eyebrow/kicker labels above headings, aurora or glow backgrounds, glass cards, or decorative section numbers — they were removed as the generic "AI startup" look (see `.impeccable/critique/`). Don't reintroduce them. Emphasis comes from size, weight, and the `ember` accent, which is reserved for the curation gate.
+- Custom `@utility` classes: `container-x`, `btn-primary`, `btn-ghost`, `hairline`, `reveal`, plus `tech-grid` and `grain` for the background. The page deliberately has **no** gradient text, eyebrow/kicker labels above headings, glass cards, decorative section numbers, or per-section glows (see `.impeccable/critique/`). Don't reintroduce them.
+- **Background:** the only page background is `InteractiveBackground` (`src/components/site/background/`), ported at the user's request from the Future AI Insights site (`../sitefuture`).
+  - **Layers:**
+    - a raw-WebGL liquid mesh whose palette follows scroll progress and whose halo trails the pointer;
+    - a technical grid;
+    - a canvas particle field that avoids the pointer and grows denser near sections marked `data-dense` (the hero and Método);
+    - film grain and a darkening vignette that keeps text legible.
+  - **Stacking:** it is fixed at `-z-10`, so no page wrapper may paint its own background over it.
+  - **Fallbacks:** without WebGL a static CSS gradient stands in, and reduced motion freezes the mesh. Emphasis comes from size, weight, and the `ember` accent, which is reserved for the curation gate.
 - Keep text at `white/60` or above on the dark background (`/55` is the floor for 12px metadata); lower alphas fail WCAG AA.
 - `reveal` pairs with `<Reveal>` through `data-hidden`: content renders visible on the server and before hydration, and only elements that start below the fold are hidden on mount and revealed on scroll. Reduced motion skips it entirely. Use it only for list items and the gate's own statements: ordinary text blocks don't animate, and neither does the contact section, because visitors often arrive there by anchor jump and must land on settled content. Each variant has a role:
   - `rise`: blocks and list items (the default);

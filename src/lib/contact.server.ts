@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { MIN_FILL_MS, type ContactInput, type ContactResult } from "./contact";
 import { buildConfirmationEmail, buildTeamEmail } from "./contact-email";
 
-export const DEFAULT_CONTACT_TO = "arthurlimagomes40@gmail.com";
+export const DEFAULT_CONTACT_TO = "daniel.reis@futureai.consulting";
 // Must be on a domain verified in Resend; CONTACT_FROM_EMAIL overrides it.
 export const DEFAULT_CONTACT_FROM = "Site FutureAI Video <contato@futureailabs.com>";
 

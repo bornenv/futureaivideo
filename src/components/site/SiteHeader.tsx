@@ -82,7 +82,7 @@ export function SiteHeader() {
                 className={`rounded-full px-4 py-2 text-sm transition-colors duration-300 ${
                   active === item.href
                     ? "bg-white/10 text-white"
-                    : "text-white/65 hover:bg-white/5 hover:text-white"
+                    : "text-white/80 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 {item.label}
