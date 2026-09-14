@@ -1,96 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Play, X } from "lucide-react";
-import type { ContactService } from "@/lib/contact";
 import { prefillContact } from "./contact-prefill";
+import { PORTFOLIO, onOpenPortfolioPiece, type PortfolioItem } from "./portfolio";
 import { Reveal } from "./Reveal";
-
-type Item = {
-  id: string;
-  title: string;
-  category: string;
-  /** Contact-form option preselected when the visitor asks about this piece. */
-  service: ContactService;
-  desc: string;
-  highlight: string;
-  video: string;
-};
-
-const ITEMS: Item[] = [
-  {
-    id: "corporate",
-    title: "Filme institucional generativo",
-    category: "Corporativo",
-    service: "Vídeos corporativos",
-    desc: "Narrativa executiva construída com cenas geradas e direção humana.",
-    highlight: "Conceito único, múltiplos cortes",
-    video: "/videos/portfolio/corporate.mp4",
-  },
-  {
-    id: "shopping",
-    title: "Campanha de varejo",
-    category: "Campanhas",
-    service: "Marketing e campanhas",
-    desc: "Uma ideia adaptada para vertical, quadrado e horizontal.",
-    highlight: "Variações por canal",
-    video: "/videos/portfolio/shopping.mp4",
-  },
-  {
-    id: "consumer",
-    title: "Filme de produto",
-    category: "Campanhas",
-    service: "Marketing e campanhas",
-    desc: "Peça voltada ao consumidor, com cenas geradas e acabamento cinematográfico.",
-    highlight: "Produto em destaque",
-    video: "/videos/portfolio/consumer.mp4",
-  },
-  {
-    id: "felipe",
-    title: "Apresentador digital",
-    category: "Avatares",
-    service: "Avatares e personagens",
-    desc: "Porta-voz virtual para comunicação recorrente da marca.",
-    highlight: "Personagem consistente",
-    video: "/videos/portfolio/felipe.mp4",
-  },
-  {
-    id: "brand",
-    title: "Série de conteúdo de marca",
-    category: "Conteúdo",
-    service: "Conteúdo de marca",
-    desc: "Episódios curtos com identidade visual contínua.",
-    highlight: "Produção recorrente",
-    video: "/videos/portfolio/brand.mp4",
-  },
-  {
-    id: "jazz",
-    title: "Experimento audiovisual",
-    category: "P&D",
-    service: "Consultoria e P&D",
-    desc: "Exploração de linguagem visual com modelos multimodais.",
-    highlight: "Laboratório criativo",
-    video: "/videos/portfolio/jazz.mp4",
-  },
-];
-
-// `#t=0.1` makes browsers (notably iOS Safari) paint the first frame as a poster.
-const previewSrc = (video: string) => `${video}#t=0.1`;
 
 const FOCUSABLE = 'button, a[href], video[controls], [tabindex]:not([tabindex="-1"])';
 
+const focusedElement = () =>
+  document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
 export function Showcase() {
-  const [open, setOpen] = useState<Item | null>(null);
+  const [open, setOpen] = useState<PortfolioItem | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  // Focus goes back to the card that opened the dialog, unless the visitor
-  // left through the contact link: then it must stay with the form.
+  // Focus goes back to whatever opened the dialog, unless the visitor left
+  // through the contact link: then it must stay with the form.
   const openerRef = useRef<HTMLElement | null>(null);
   const restoreFocusRef = useRef(true);
 
-  const openItem = (item: Item) => {
-    openerRef.current =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  const openItem = (item: PortfolioItem) => {
+    openerRef.current = focusedElement();
     setOpen(item);
   };
+
+  // Serviços can open a piece from its own section.
+  useEffect(
+    () =>
+      onOpenPortfolioPiece((id) => {
+        const item = PORTFOLIO.find((i) => i.id === id);
+        if (!item) return;
+        openerRef.current = focusedElement();
+        setOpen(item);
+      }),
+    [],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -129,17 +72,15 @@ export function Showcase() {
   return (
     <section id="portfolio" className="relative py-24 md:py-32">
       <div className="container-x">
-        <Reveal>
-          <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
-            Peças entregues
-          </h2>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-            Projetos produzidos para clientes, em diferentes frentes e formatos.
-          </p>
-        </Reveal>
+        <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
+          Peças entregues
+        </h2>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
+          Projetos produzidos para clientes, em diferentes frentes e formatos.
+        </p>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {ITEMS.map((item, i) => (
+          {PORTFOLIO.map((item, i) => (
             <Reveal key={item.id} delay={(i % 3) * 80} className="h-full">
               <ShowcaseCard item={item} onOpen={() => openItem(item)} />
             </Reveal>
@@ -152,7 +93,7 @@ export function Showcase() {
           className="fixed inset-0 z-[60] flex items-center justify-center bg-background/90 p-4 animate-in fade-in-0 duration-200"
           onClick={() => setOpen(null)}
         >
-          {/* The piece grows out of the grid it was picked from; reduced motion keeps only the fade. */}
+          {/* Reduced motion keeps only the fade. */}
           <div
             ref={dialogRef}
             role="dialog"
@@ -174,6 +115,7 @@ export function Showcase() {
             <video
               key={open.id}
               src={open.video}
+              poster={open.poster}
               aria-label={open.title}
               controls
               autoPlay
@@ -211,18 +153,22 @@ export function Showcase() {
   );
 }
 
-function ShowcaseCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
+function ShowcaseCard({ item, onOpen }: { item: PortfolioItem; onOpen: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // The hover preview is decoration: skip it under reduced motion, and never run it
+  // for keyboard focus, where it would only distract.
   const play = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // play() rejects if interrupted by a quick mouseleave — harmless here.
     videoRef.current?.play().catch(() => {});
   };
   const stop = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || video.paused) return;
     video.pause();
-    video.currentTime = 0.1;
+    // load() puts the poster back without downloading anything (preload is "none").
+    video.load();
   };
 
   return (
@@ -231,19 +177,18 @@ function ShowcaseCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
       onClick={onOpen}
       onMouseEnter={play}
       onMouseLeave={stop}
-      onFocus={play}
-      onBlur={stop}
       aria-label={`Ver vídeo: ${item.title}`}
       className="group flex h-full w-full flex-col overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] text-left transition-colors duration-300 hover:border-white/25 focus-visible:border-white/40"
     >
       <span className="relative block aspect-[16/10] overflow-hidden">
         <video
           ref={videoRef}
-          src={previewSrc(item.video)}
+          src={item.video}
+          poster={item.poster}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           aria-hidden="true"
           tabIndex={-1}
           className="h-full w-full object-cover opacity-85 transition-opacity duration-500 group-hover:opacity-100"

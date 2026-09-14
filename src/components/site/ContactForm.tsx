@@ -17,8 +17,10 @@ import { onContactPrefill } from "./contact-prefill";
 
 export const CONTACT_EMAIL = "daniel.reis@futureai.consulting";
 
-/** How long the service field stays highlighted after a portfolio piece prefills it. */
+/** How long the service field stays highlighted after a prefill fills it in. */
 const PREFILL_HIGHLIGHT_MS = 1400;
+/** Upper bound for the smooth anchor scroll, for browsers without `scrollend`. */
+const SCROLL_SETTLE_FALLBACK_MS = 1200;
 
 const EMPTY: ContactFormValues = {
   name: "",
@@ -35,6 +37,28 @@ type Status = "idle" | "success" | "error" | "unavailable";
 
 const fieldClass =
   "h-12 rounded-xl border-white/40 bg-white/[0.04] px-4 text-[0.95rem] text-white shadow-none transition-colors placeholder:text-white/55 hover:border-white/60 focus-visible:border-violet/70 focus-visible:ring-2 focus-visible:ring-violet/35 aria-[invalid=true]:border-red-300/60 md:text-sm";
+
+/**
+ * Runs `fn` once the page stops scrolling (the jump to #contato is a smooth scroll),
+ * or after a fallback delay when no scroll happens. Returns a cancel function.
+ */
+function afterScrollSettles(fn: () => void) {
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    cancel();
+    fn();
+  };
+  const fallback = window.setTimeout(run, SCROLL_SETTLE_FALLBACK_MS);
+  window.addEventListener("scrollend", run, { once: true });
+  function cancel() {
+    done = true;
+    window.clearTimeout(fallback);
+    window.removeEventListener("scrollend", run);
+  }
+  return cancel;
+}
 
 function FieldError({ id, message }: { id: string; message: string | undefined }) {
   if (!message) return null;
@@ -79,21 +103,39 @@ export function ContactForm() {
     if (status === "success") successRef.current?.focus();
   }, [status]);
 
-  // A portfolio piece can hand the form a starting point; the visitor's own text always
-  // wins. The service field flashes briefly so the visitor sees what was filled in.
+  // Another section (a portfolio piece, the legal link) can hand the form a starting
+  // point. The visitor's own choices always win: a service or message they already
+  // gave is never replaced. Once the scroll to the form settles, focus moves to the
+  // message and the service field flashes if it was filled in for them.
   useEffect(() => {
-    let timer = 0;
+    let highlightTimer = 0;
+    let cancelPending = () => {};
     const unsubscribe = onContactPrefill(({ service, message }) => {
       setStatus("idle");
-      setValue("service", service, { shouldValidate: true });
+      const fillService = !getValues("service");
+      if (fillService) setValue("service", service, { shouldValidate: true });
       if (!getValues("message").trim()) setValue("message", message, { shouldDirty: true });
-      setServiceHighlighted(true);
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => setServiceHighlighted(false), PREFILL_HIGHLIGHT_MS);
+
+      cancelPending();
+      cancelPending = afterScrollSettles(() => {
+        const field = document.getElementById("contact-message");
+        if (field instanceof HTMLTextAreaElement) {
+          field.focus({ preventScroll: true });
+          field.setSelectionRange(field.value.length, field.value.length);
+        }
+        if (!fillService) return;
+        setServiceHighlighted(true);
+        window.clearTimeout(highlightTimer);
+        highlightTimer = window.setTimeout(
+          () => setServiceHighlighted(false),
+          PREFILL_HIGHLIGHT_MS,
+        );
+      });
     });
     return () => {
       unsubscribe();
-      window.clearTimeout(timer);
+      cancelPending();
+      window.clearTimeout(highlightTimer);
     };
   }, [getValues, setValue]);
 
@@ -271,8 +313,8 @@ export function ContactForm() {
             {...register("consent")}
           />
           <span className="text-xs leading-relaxed text-white/65">
-            Autorizo o uso destes dados para que a Future AI Video Labs responda ao meu contato,
-            conforme a LGPD. Não enviamos newsletter nem compartilhamos com terceiros.
+            Autorizo o uso destes dados apenas para que a Future AI Video Labs responda a este
+            contato. Não usamos para newsletter.
           </span>
         </label>
         <FieldError id="contact-consent-error" message={errors.consent?.message} />

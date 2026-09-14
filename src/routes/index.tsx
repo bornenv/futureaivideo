@@ -2,15 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Showcase } from "@/components/site/Showcase";
-import {
-  Hero,
-  About,
-  Services,
-  Method,
-  Ethics,
-  Technology,
-  FinalCta,
-} from "@/components/site/sections";
+import { Hero, About, Services, Method, Ethics, FinalCta } from "@/components/site/sections";
 
 const TITLE = "Future AI Video Labs | IA para Produção Audiovisual";
 const DESCRIPTION =
@@ -53,7 +45,6 @@ function Index() {
         <About />
         <Showcase />
         <Services />
-        <Technology />
         <Method />
         <Ethics />
         <FinalCta />

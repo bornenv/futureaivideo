@@ -201,13 +201,13 @@
 }
 
 /* Paired with <Reveal>: visible by default, hidden only while off screen below the
-   fold. Each role arrives differently: blocks rise, large blocks only fade, and the
-   gate's own statements wipe in from the left, like an approval being granted. */
+   fold. Used for lists and the gate's own statements only; ordinary text blocks do
+   not animate. Lists rise, large blocks fade, and the gate's statements wipe in from
+   the left, like an approval being granted. */
 @utility reveal {
   transition:
     opacity 0.7s var(--ease-out-expo),
-    transform 0.7s var(--ease-out-expo),
-    clip-path 0.9s var(--ease-out-expo);
+    transform 0.7s var(--ease-out-expo);
 
   &[data-hidden="true"] {
     opacity: 0;
@@ -240,25 +240,26 @@
 
 /* ---------------------------------------------------------------------------
    The approval sequence, the page's one authored moment. It runs once on load,
-   in CSS only, so it needs no JS: the five method steps in the hero light up in
-   order, the Curadoria chip is approved before the flow reaches Entrega, and in
-   the same beat "aprovação humana" is underlined in the headline. Every
-   keyframe animates *from* a start state, so the resting style is the final one.
+   in CSS only, so it needs no JS: each method step in the hero lights up and
+   draws its underline in turn, the Curadoria chip is approved before the flow
+   reaches Entrega, and in the same beat "aprovação humana" is underlined in
+   the headline. Every keyframe animates *from* a start state, so the resting
+   style is the final one.
    ------------------------------------------------------------------------- */
 @keyframes flow-step {
   from {
-    color: oklch(1 0 0 / 0.45);
+    color: oklch(1 0 0 / 0.35);
   }
 }
 
 @keyframes gate-approve {
   0% {
-    border-color: oklch(0.62 0.19 40 / 0.25);
+    border-color: oklch(0.62 0.19 40 / 0.2);
     background-color: oklch(0.62 0.19 40 / 0);
   }
   55% {
     border-color: var(--ember);
-    background-color: oklch(0.62 0.19 40 / 0.24);
+    background-color: oklch(0.62 0.19 40 / 0.3);
   }
 }
 
@@ -275,8 +276,24 @@
   }
 }
 
+/* The step's own underline draws with it, so the "flow" always lines up with the
+   steps however the strip wraps. */
 @utility flow-step {
+  position: relative;
   animation: flow-step 0.5s ease-out both;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.4em;
+    height: 1px;
+    background: oklch(1 0 0 / 0.35);
+    transform-origin: left;
+    animation: underline-draw 0.5s var(--ease-out-expo) both;
+    animation-delay: inherit;
+  }
 }
 
 @utility gate-approve {
@@ -309,10 +326,12 @@
   html {
     scroll-behavior: auto;
   }
-  .reveal {
+  .reveal,
+  .reveal > * {
     transition: none !important;
   }
   .flow-step,
+  .flow-step::after,
   .gate-approve,
   .rise-in,
   .gate-underline::after {

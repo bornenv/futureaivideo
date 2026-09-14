@@ -22,7 +22,7 @@ export function SiteHeader() {
   }, []);
 
   // Watch every section, not only the linked ones: reading a section that has no
-  // nav link (hero, Sobre, Tecnologia, Contato) must clear the highlight.
+  // nav link (hero, Sobre, Contato) must clear the highlight.
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("main section[id]"));
     if (!els.length) return;
@@ -109,13 +109,13 @@ export function SiteHeader() {
           >
             <span className="relative block h-3 w-4">
               <span
-                className={`absolute left-0 block h-px w-4 bg-white transition-all duration-300 ${open ? "top-1.5 rotate-45" : "top-0"}`}
+                className={`absolute left-0 block h-px w-4 bg-white transition-all duration-300 motion-reduce:transition-none ${open ? "top-1.5 rotate-45" : "top-0"}`}
               />
               <span
                 className={`absolute left-0 top-1.5 block h-px w-4 bg-white transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
               />
               <span
-                className={`absolute left-0 block h-px w-4 bg-white transition-all duration-300 ${open ? "top-1.5 -rotate-45" : "top-3"}`}
+                className={`absolute left-0 block h-px w-4 bg-white transition-all duration-300 motion-reduce:transition-none ${open ? "top-1.5 -rotate-45" : "top-3"}`}
               />
             </span>
           </button>
@@ -123,7 +123,7 @@ export function SiteHeader() {
       </div>
 
       <div
-        className={`overflow-hidden border-b border-white/[0.08] bg-background transition-[max-height,opacity] duration-500 lg:hidden ${
+        className={`overflow-hidden border-b border-white/[0.08] bg-background transition-[max-height,opacity] duration-500 motion-reduce:transition-none lg:hidden ${
           open ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -134,7 +134,7 @@ export function SiteHeader() {
               href={item.href}
               onClick={() => setOpen(false)}
               style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
-              className={`border-b border-white/[0.06] py-4 font-display text-2xl font-medium tracking-tight transition-all duration-500 ${
+              className={`border-b border-white/[0.06] py-4 font-display text-2xl font-medium tracking-tight transition-all duration-500 motion-reduce:translate-y-0 motion-reduce:transition-none ${
                 open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
               } ${active === item.href ? "text-white" : "text-white/65"}`}
             >

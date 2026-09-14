@@ -2,23 +2,28 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, Pause, Play } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { CONTACT_EMAIL, ContactForm } from "./ContactForm";
+import { prefillContact } from "./contact-prefill";
+import { PORTFOLIO, openPortfolioPiece } from "./portfolio";
 
 // Curation is the studio's quality gate: a piece that fails it never reaches delivery.
 // The hero and the method both single this step out, and ember is reserved for it.
 const GATE_STEP = "Curadoria";
+const PRODUCTION_STEP = "Produção";
 
 /* ---------------------------------- HERO --------------------------------- */
 
-const METHOD_FLOW = ["Estratégia", "Conceito", "Produção", GATE_STEP, "Entrega"];
+const METHOD_FLOW = ["Estratégia", "Conceito", PRODUCTION_STEP, GATE_STEP, "Entrega"];
 
-// The approval sequence (see styles.css): each step lights up in turn, and the
-// flow holds at the gate while it is approved before reaching Entrega. Seconds.
+// The approval sequence (see styles.css): each step lights up and underlines in
+// turn, and the flow holds at the gate while it is approved before reaching
+// Entrega. Seconds.
 const FLOW_START = 0.35;
 const FLOW_STEP = 0.28;
 const GATE_HOLD = 0.55;
 const GATE_INDEX = METHOD_FLOW.indexOf(GATE_STEP);
-const flowDelay = (i: number) =>
-  `${FLOW_START + i * FLOW_STEP + (i > GATE_INDEX ? GATE_HOLD : 0)}s`;
+const flowAt = (i: number) => FLOW_START + i * FLOW_STEP + (i > GATE_INDEX ? GATE_HOLD : 0);
+// The reel waits for the last step, so the sequence has the viewer's attention to itself.
+const FLOW_END_MS = (flowAt(METHOD_FLOW.length - 1) + 0.5) * 1000;
 
 const HERO_REEL = {
   video: "/videos/portfolio/corporate.mp4",
@@ -27,8 +32,8 @@ const HERO_REEL = {
 };
 
 // The reel autoplays only where it is cheap and welcome: wide screens, no reduced
-// motion, no data saver, and only after the page has loaded. Everywhere else the
-// poster frame stands in, so the first viewport never waits on the video file.
+// motion, no data saver, and only after the page has loaded and the approval
+// sequence has finished. Everywhere else the poster frame stands in.
 function HeroReel() {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -54,11 +59,18 @@ function HeroReel() {
       },
       { threshold: 0.25 },
     );
-    const start = () => io.observe(video);
+    let timer = 0;
+    const start = () => {
+      timer = window.setTimeout(
+        () => io.observe(video),
+        Math.max(0, FLOW_END_MS - performance.now()),
+      );
+    };
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
     return () => {
       window.removeEventListener("load", start);
+      window.clearTimeout(timer);
       io.disconnect();
     };
   }, []);
@@ -129,9 +141,37 @@ export function Hero() {
               className="rise-in mt-8 max-w-xl text-base leading-relaxed text-white/70 md:text-lg"
               style={{ animationDelay: "120ms" }}
             >
-              A Future AI Video Labs combina criatividade humana, inteligência artificial generativa
-              e tecnologia audiovisual para transformar ideias em vídeos, campanhas e experiências.
+              Mais vídeo, em mais formatos, canais e idiomas, sem ampliar sua equipe. Cada peça
+              passa pela curadoria antes de chegar até você.
             </p>
+
+            <ol
+              aria-label="Método em cinco etapas"
+              className="mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-4 text-sm"
+            >
+              {METHOD_FLOW.map((step, i) => (
+                <li key={step} className="flex items-center gap-2.5">
+                  {step === GATE_STEP ? (
+                    <span
+                      className="gate-approve rounded-full border border-ember/60 bg-ember/10 px-3 py-1 font-medium text-white"
+                      style={{ animationDelay: `${flowAt(i)}s` }}
+                    >
+                      {step}
+                    </span>
+                  ) : (
+                    <span
+                      className="flow-step text-white/80"
+                      style={{ animationDelay: `${flowAt(i)}s` }}
+                    >
+                      {step}
+                    </span>
+                  )}
+                  {i < METHOD_FLOW.length - 1 && (
+                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-white/40" />
+                  )}
+                </li>
+              ))}
+            </ol>
 
             <div
               className="rise-in mt-10 flex flex-col gap-3 sm:flex-row"
@@ -149,32 +189,6 @@ export function Hero() {
 
           <HeroReel />
         </div>
-
-        <ol
-          aria-label="Método em cinco etapas"
-          className="mt-16 flex flex-wrap items-center gap-3 border-t border-white/10 pt-8 text-sm md:mt-20"
-        >
-          {METHOD_FLOW.map((step, i) => (
-            <li key={step} className="flex items-center gap-3">
-              {step === GATE_STEP ? (
-                <span
-                  className="gate-approve rounded-full border border-ember/60 bg-ember/10 px-3.5 py-1.5 font-medium text-white"
-                  style={{ animationDelay: flowDelay(i) }}
-                >
-                  {step}
-                  <span className="text-white/70"> · aprovação humana</span>
-                </span>
-              ) : (
-                <span className="flow-step text-white/70" style={{ animationDelay: flowDelay(i) }}>
-                  {step}
-                </span>
-              )}
-              {i < METHOD_FLOW.length - 1 && (
-                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-white/40" />
-              )}
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
@@ -202,17 +216,13 @@ export function About() {
     <section id="sobre" className="relative py-24 md:py-36">
       <div className="container-x">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-          <Reveal>
-            <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
-              Criatividade e execução
-              <br className="hidden md:block" /> em produção audiovisual
-            </h2>
-          </Reveal>
-          <Reveal delay={100}>
-            <p className="text-base leading-relaxed text-white/70">
-              O que orienta cada projeto, da ideia ao vídeo entregue.
-            </p>
-          </Reveal>
+          <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
+            Criatividade e execução
+            <br className="hidden md:block" /> em produção audiovisual
+          </h2>
+          <p className="text-base leading-relaxed text-white/70">
+            O que orienta cada projeto, da ideia ao vídeo entregue.
+          </p>
         </div>
 
         <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-8">
@@ -243,37 +253,31 @@ const SERVICES = [
     title: "Vídeos corporativos",
     lead: "Narrativas institucionais com acabamento de estúdio.",
     desc: "Apresentações, vídeos institucionais, mensagens executivas e comunicação interna.",
-    tags: ["Institucional", "Executivo", "Interno"],
   },
   {
     title: "Marketing e campanhas",
     lead: "Uma ideia, desdobrada por público e canal.",
-    desc: "Campanhas digitais, anúncios, vídeos sociais e variações por público e canal.",
-    tags: ["Anúncios", "Social", "Performance"],
+    desc: "Campanhas digitais, anúncios e vídeos para redes sociais.",
   },
   {
     title: "Educação e treinamento",
     lead: "Conhecimento em formato audiovisual.",
     desc: "Tutoriais, treinamentos, conteúdos educacionais e narração multilíngue.",
-    tags: ["Tutoriais", "Onboarding", "Multilíngue"],
   },
   {
     title: "Conteúdo de marca",
     lead: "Presença contínua com identidade consistente.",
     desc: "Reels, séries, teasers, storytelling e conteúdos recorrentes para o ano inteiro.",
-    tags: ["Reels", "Séries", "Storytelling"],
   },
   {
     title: "Avatares e personagens",
     lead: "Porta-vozes digitais e personagens virtuais.",
     desc: "Avatares realistas, apresentadores digitais, experiências interativas e simulações.",
-    tags: ["Avatares", "Voz neural", "Interativo"],
   },
   {
     title: "Consultoria e P&D",
     lead: "Novos fluxos de produção com IA.",
     desc: "Estratégia, experimentação e desenho de fluxos de produção audiovisual assistidos por IA.",
-    tags: ["Estratégia", "Fluxos de produção", "Experimentação"],
   },
 ];
 
@@ -281,32 +285,50 @@ export function Services() {
   return (
     <section id="servicos" className="relative py-24 md:py-32">
       <div className="container-x">
-        <Reveal>
-          <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
-            O que fazemos
-          </h2>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-            Seis frentes que se sustentam. A direção define o alvo, a IA generativa entrega
-            capacidade de produção, a curadoria mantém qualidade e a escala leva o conteúdo a todos
-            os canais.
-          </p>
-        </Reveal>
+        <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
+          O que fazemos
+        </h2>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
+          Seis frentes que se sustentam. A direção define o alvo, a IA generativa entrega capacidade
+          de produção, a curadoria mantém qualidade e a escala leva o conteúdo a todos os canais.
+        </p>
 
         <div className="mt-14 grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s, i) => (
-            <Reveal key={s.title} delay={(i % 3) * 90} className="h-full">
-              <article className="h-full border-t border-white/15 pt-7">
-                <h3 className="text-xl font-semibold">{s.title}</h3>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-white/85">{s.lead}</p>
-                <p className="mt-2 text-sm leading-relaxed text-white/65">{s.desc}</p>
-                <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/60">
-                  {s.tags.map((t) => (
-                    <li key={t}>{t}</li>
-                  ))}
-                </ul>
-              </article>
-            </Reveal>
-          ))}
+          {SERVICES.map((s, i) => {
+            // Each frente points at the delivered piece that proves it, when there is one.
+            const proof = PORTFOLIO.find((p) => p.service === s.title);
+            return (
+              <Reveal key={s.title} delay={(i % 3) * 90} className="h-full">
+                <article className="flex h-full flex-col border-t border-white/15 pt-7">
+                  <h3 className="text-xl font-semibold">{s.title}</h3>
+                  <p className="mt-3 text-[0.95rem] leading-relaxed text-white/85">{s.lead}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-white/65">{s.desc}</p>
+                  {proof && (
+                    <button
+                      type="button"
+                      onClick={() => openPortfolioPiece(proof.id)}
+                      className="group mt-6 flex items-center gap-3 text-left text-sm text-white/85 transition-colors hover:text-white"
+                    >
+                      <img
+                        src={proof.poster}
+                        alt=""
+                        width={80}
+                        height={48}
+                        loading="lazy"
+                        className="h-12 w-20 shrink-0 rounded-md border border-white/10 object-cover"
+                      />
+                      <span>
+                        Ver peça:{" "}
+                        <span className="underline-offset-4 group-hover:underline">
+                          {proof.title}
+                        </span>
+                      </span>
+                    </button>
+                  )}
+                </article>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -330,7 +352,7 @@ const STEPS = [
   },
   {
     num: "03",
-    title: "Produção",
+    title: PRODUCTION_STEP,
     desc: "Geração com IA multimodal: imagem, movimento, voz, trilha e montagem.",
     items: ["IA generativa", "Voz neural", "Montagem"],
   },
@@ -346,6 +368,36 @@ const STEPS = [
     desc: "Finalização e adaptação para formatos, canais, públicos e idiomas.",
     items: ["Formatos", "Versões", "Idiomas"],
   },
+];
+
+// Technology lives inside the Produção step: direction comes before the tool, so it
+// is presented as part of the method rather than as a section of its own.
+const CAPABILITIES = [
+  {
+    name: "Imagem e movimento",
+    desc: "Geração, edição e tratamento de imagem e vídeo com modelos generativos e visão computacional.",
+  },
+  {
+    name: "Voz e idioma",
+    desc: "Voz neural com controle de interpretação e narração em vários idiomas.",
+  },
+  {
+    name: "Avatares digitais",
+    desc: "Apresentadores e personagens virtuais para comunicação recorrente.",
+  },
+  {
+    name: "Fluxo multimodal",
+    desc: "Texto, áudio, imagem e vídeo num só fluxo, com etapas automatizadas e reproduzíveis.",
+  },
+];
+
+const RESEARCH = [
+  "storytelling generativo",
+  "narração neural",
+  "tradução automatizada",
+  "personalização de vídeos",
+  "agentes criativos",
+  "automação audiovisual",
 ];
 
 function stepMarkerClass(isGate: boolean, isActive: boolean, isPast: boolean) {
@@ -375,17 +427,20 @@ export function Method() {
     return () => io.disconnect();
   }, []);
 
+  const goToStep = (i: number) => {
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    refs.current[i]?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "center" });
+  };
+
   return (
     <section id="metodologia" className="relative py-24 md:py-32">
       <div className="container-x">
-        <Reveal>
-          <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
-            Da ideia ao vídeo
-          </h2>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-            O mesmo ciclo roda em qualquer frente. O que muda é o formato.
-          </p>
-        </Reveal>
+        <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3.2rem]">
+          Da ideia ao vídeo
+        </h2>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
+          O mesmo ciclo roda em qualquer frente. O que muda é o formato.
+        </p>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[300px_1fr] lg:gap-16">
           <div className="hidden lg:block">
@@ -401,9 +456,7 @@ export function Method() {
                 <button
                   key={s.num}
                   type="button"
-                  onClick={() =>
-                    refs.current[i]?.scrollIntoView({ behavior: "smooth", block: "center" })
-                  }
+                  onClick={() => goToStep(i)}
                   className="flex w-full items-center gap-4 py-3 text-left"
                 >
                   <span
@@ -466,6 +519,25 @@ export function Method() {
                       </li>
                     ))}
                   </ul>
+                  {s.title === PRODUCTION_STEP && (
+                    <div id="tecnologia" className="mt-8 border-t border-white/10 pt-6">
+                      <h4 className="text-sm font-semibold text-white">
+                        Tecnologia por trás da produção
+                      </h4>
+                      <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                        {CAPABILITIES.map((c) => (
+                          <div key={c.name}>
+                            <dt className="text-sm font-medium text-white/90">{c.name}</dt>
+                            <dd className="mt-1 text-sm leading-relaxed text-white/65">{c.desc}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p id="pesquisa" className="mt-5 text-sm leading-relaxed text-white/65">
+                        <span className="font-medium text-white/85">Em pesquisa: </span>
+                        {RESEARCH.join(", ")}.
+                      </p>
+                    </div>
+                  )}
                   {isGate && (
                     <Reveal variant="wipe" className="mt-8">
                       <dl className="grid gap-4 border-t border-ember/30 pt-6 text-sm sm:grid-cols-2">
@@ -493,7 +565,8 @@ export function Method() {
 /* ------------------------------ IA RESPONSÁVEL ---------------------------- */
 
 // The eight commitments, paired so the list reads as four points. Labels only:
-// the studio's written policies behind them have not been provided yet.
+// the studio's written policies behind them have not been provided yet, so the copy
+// offers a conversation instead of claiming practices.
 const ETHICS = [
   "Direitos autorais e autenticidade criativa",
   "Privacidade e LGPD",
@@ -505,23 +578,29 @@ export function Ethics() {
   return (
     <section id="etica" className="relative py-24 md:py-32">
       <div className="container-x grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-        <Reveal>
+        <div>
           <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3rem]">
             IA responsável. Criatividade consciente.
           </h2>
           <p className="mt-6 max-w-md text-base leading-relaxed text-white/70">
-            Projetos corporativos com IA passam pelo jurídico. Adotamos práticas de uso de
-            inteligência artificial pensadas para esse contexto, e estes são os pontos que elas
-            cobrem.
+            Projetos corporativos com IA passam pelo jurídico. Estes são os temas que você pode
+            discutir com a gente antes de começar.
           </p>
           <a
             href="#contato"
+            onClick={() =>
+              prefillContact({
+                service: "Ainda não sei",
+                message:
+                  "Queremos conversar sobre uso de IA, direitos autorais e tratamento de dados antes de começar um projeto.",
+              })
+            }
             className="group mt-8 inline-flex items-center gap-2 text-sm text-white/85 transition-colors hover:text-white"
           >
             Dúvidas do seu jurídico? Fale com a gente
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
-        </Reveal>
+        </div>
         <ul className="border-t border-white/10">
           {ETHICS.map((e, i) => (
             <li key={e} className="border-b border-white/10">
@@ -539,78 +618,6 @@ export function Ethics() {
   );
 }
 
-/* -------------------------------- TECNOLOGIA ------------------------------ */
-
-const CAPABILITIES = [
-  {
-    name: "Imagem e movimento",
-    desc: "Geração, edição e tratamento de imagem e vídeo com modelos generativos e visão computacional.",
-  },
-  {
-    name: "Voz e idioma",
-    desc: "Voz neural com controle de interpretação e narração em vários idiomas.",
-  },
-  {
-    name: "Avatares digitais",
-    desc: "Apresentadores e personagens virtuais para comunicação recorrente.",
-  },
-  {
-    name: "Fluxo multimodal",
-    desc: "Texto, áudio, imagem e vídeo num só fluxo, com etapas automatizadas e reproduzíveis.",
-  },
-];
-
-const RESEARCH = [
-  "Storytelling generativo",
-  "Narração neural",
-  "Tradução automatizada",
-  "Personalização de vídeos",
-  "Agentes criativos",
-  "Automação audiovisual",
-];
-
-export function Technology() {
-  return (
-    <section id="tecnologia" className="relative py-24 md:py-32">
-      <div className="container-x grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
-        <Reveal>
-          <h2 className="text-[2.1rem] font-semibold leading-[1.06] md:text-[3rem]">
-            Tecnologia por trás da criatividade
-          </h2>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-white/70">
-            Inteligência artificial aplicada a cada etapa da produção, e linhas contínuas de
-            pesquisa para antecipar as próximas capacidades.
-          </p>
-        </Reveal>
-        <div>
-          <dl className="divide-y divide-white/10 border-y border-white/10">
-            {CAPABILITIES.map((c, i) => (
-              <Reveal
-                key={c.name}
-                delay={i * 70}
-                className="grid gap-2 py-6 md:grid-cols-[1fr_1.4fr] md:gap-10"
-              >
-                <dt className="font-display text-lg font-medium">{c.name}</dt>
-                <dd className="text-sm leading-relaxed text-white/70">{c.desc}</dd>
-              </Reveal>
-            ))}
-          </dl>
-          <Reveal delay={280}>
-            <div id="pesquisa" className="mt-10">
-              <h3 className="font-display text-base font-medium">Em pesquisa</h3>
-              <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70">
-                {RESEARCH.map((r) => (
-                  <li key={r}>{r}</li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ---------------------------------- CTA ----------------------------------- */
 
 const NEXT_STEPS = [
@@ -619,43 +626,41 @@ const NEXT_STEPS = [
   "Enviar a mensagem não gera compromisso de contratação.",
 ];
 
+// No reveal here: visitors often arrive by anchor jump, and the section must already
+// be settled when they land.
 export function FinalCta() {
   return (
     <section id="contato" className="relative py-24 md:py-32">
       <div className="container-x">
-        <Reveal variant="fade">
-          <div className="grid gap-12 border-t border-white/10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:pt-20">
-            <div>
-              <h2 className="max-w-xl text-[2.2rem] font-semibold leading-[1.05] md:text-[3.2rem]">
-                Conte o objetivo. A direção vem antes da ferramenta.
-              </h2>
-              <h3 className="mt-10 text-base font-semibold">Depois do envio</h3>
-              <ul className="mt-4 max-w-md border-t border-white/10">
-                {NEXT_STEPS.map((step, i) => (
-                  <li key={step} className="border-b border-white/10">
-                    <Reveal
-                      delay={200 + i * 80}
-                      className="py-3 text-sm leading-relaxed text-white/70"
-                    >
-                      {step}
-                    </Reveal>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 text-sm text-white/60">Prefere escrever direto?</p>
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="group mt-2 inline-flex items-center gap-2 text-sm text-white/85 transition-colors hover:text-white"
-              >
-                {CONTACT_EMAIL}
-                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </div>
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.02] p-6 md:p-8">
-              <ContactForm />
-            </div>
+        <div className="grid gap-12 border-t border-white/10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:pt-20">
+          <div>
+            <h2 className="max-w-xl text-[2.2rem] font-semibold leading-[1.05] md:text-[3.2rem]">
+              Conte o objetivo. A direção vem antes da ferramenta.
+            </h2>
+            <h3 className="mt-10 text-base font-semibold">Depois do envio</h3>
+            <ul className="mt-4 max-w-md border-t border-white/10">
+              {NEXT_STEPS.map((step) => (
+                <li
+                  key={step}
+                  className="border-b border-white/10 py-3 text-sm leading-relaxed text-white/70"
+                >
+                  {step}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-8 text-sm text-white/60">Prefere escrever direto?</p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="group mt-2 inline-flex items-center gap-2 text-sm text-white/85 transition-colors hover:text-white"
+            >
+              {CONTACT_EMAIL}
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
           </div>
-        </Reveal>
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.02] p-6 md:p-8">
+            <ContactForm />
+          </div>
+        </div>
       </div>
     </section>
   );

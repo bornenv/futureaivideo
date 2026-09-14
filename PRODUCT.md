@@ -26,7 +26,7 @@ Consequência para trabalhos futuros: velocidade e escala são efeitos, não a t
 
 ## Operating Context
 
-- Landing page única em português do Brasil (`/`), navegada por âncoras, nesta ordem: `#top`, `#sobre`, `#portfolio`, `#servicos`, `#tecnologia` (com `#pesquisa` dentro dela), `#metodologia`, `#etica` e `#contato`. O hero mostra em loop um filme de cliente (o institucional), e o portfólio vem logo depois do Sobre: a prova aparece cedo.
+- Landing page única em português do Brasil (`/`), navegada por âncoras, nesta ordem: `#top`, `#sobre`, `#portfolio`, `#servicos`, `#metodologia` (com `#tecnologia` e `#pesquisa` dentro da etapa Produção), `#etica` e `#contato`. O hero mostra em loop um filme de cliente (o institucional), o portfólio vem logo depois do Sobre, e cada frente de serviço com peça correspondente leva ao vídeo dela: a prova aparece cedo e é ligada à oferta.
 - Sem CMS e sem banco de dados — o conteúdo é literal no código (`src/components/site/sections.tsx`). O único backend é a server function do formulário de contato, que apenas envia e-mail: nenhum lead fica armazenado no site.
 - Contexto de compra corporativa: a decisão passa por jurídico e compliance, e não só por criação. Por isso a seção de IA responsável vem logo depois do método e está na navegação principal.
 - Projeto conectado ao [Lovable](https://lovable.dev); commits no branch conectado sincronizam de volta para o editor.
@@ -37,7 +37,7 @@ Consequência para trabalhos futuros: velocidade e escala são efeitos, não a t
 
 **Método de cinco etapas**, aplicado igual em todas as frentes — o que muda é o formato: Estratégia → Conceito → Produção → Curadoria → Entrega. A Curadoria é o ponto de aprovação: a peça aprovada segue para a entrega; a não aprovada não avança.
 
-**Oito categorias de tecnologia declaradas**, apresentadas no site em quatro áreas em português (imagem e movimento; voz e idioma; avatares digitais; fluxo multimodal): IA generativa, vídeo com IA, voz neural, avatares digitais, IA multimodal, mídia sintética, automação e visão computacional. São categorias, não fornecedores: nenhum modelo, ferramenta ou parceiro é nomeado no site, e nomear um é uma decisão de produto ainda não tomada.
+**Oito categorias de tecnologia declaradas**, apresentadas dentro da etapa Produção do método (a direção vem antes da ferramenta), em quatro áreas em português (imagem e movimento; voz e idioma; avatares digitais; fluxo multimodal): IA generativa, vídeo com IA, voz neural, avatares digitais, IA multimodal, mídia sintética, automação e visão computacional. São categorias, não fornecedores: nenhum modelo, ferramenta ou parceiro é nomeado no site, e nomear um é uma decisão de produto ainda não tomada.
 
 **Seis linhas de pesquisa contínua:** storytelling generativo, narração neural, tradução automatizada, personalização de vídeos, agentes criativos, automação audiovisual.
 
