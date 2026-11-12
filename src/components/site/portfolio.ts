@@ -23,7 +23,8 @@ const piece = (
   poster: `/videos/portfolio/${id}-poster.jpg`,
 });
 
-// Client projects (confirmed by the studio). No client names, results or metrics exist.
+// Client projects (confirmed by the studio), then the studio's own films.
+// No client names, results or metrics exist.
 export const PORTFOLIO: PortfolioItem[] = [
   piece("corporate", {
     title: "Filme institucional generativo",
@@ -66,6 +67,22 @@ export const PORTFOLIO: PortfolioItem[] = [
     service: "Consultoria e P&D",
     desc: "Exploração de linguagem visual com modelos multimodais.",
     highlight: "Laboratório criativo",
+  }),
+  // The studio's own films (not client work); listed after the client pieces so
+  // Serviços keeps linking each frente to a client piece first.
+  piece("manifesto", {
+    title: "Manifesto do estúdio",
+    category: "Estúdio",
+    service: "Vídeos corporativos",
+    desc: "De uma loja a uma indústria inteira: a mesma visão aplicada em qualquer escala.",
+    highlight: "Filme próprio",
+  }),
+  piece("studio", {
+    title: "Apresentação das frentes",
+    category: "Estúdio",
+    service: "Marketing e campanhas",
+    desc: "As frentes do estúdio em um só filme, com a revisão humana antes de cada entrega.",
+    highlight: "Filme próprio",
   }),
 ];
 
