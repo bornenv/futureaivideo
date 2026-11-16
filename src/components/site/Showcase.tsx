@@ -76,8 +76,8 @@ export function Showcase() {
           Peças entregues
         </h2>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-          Projetos produzidos para clientes, em diferentes frentes e formatos, e os filmes do
-          próprio estúdio.
+          Os filmes do próprio estúdio e projetos produzidos para clientes, em diferentes frentes e
+          formatos.
         </p>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

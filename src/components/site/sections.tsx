@@ -295,8 +295,9 @@ export function Services() {
 
         <div className="mt-14 grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => {
-            // Each frente points at the delivered piece that proves it, when there is one.
-            const proof = PORTFOLIO.find((p) => p.service === s.title);
+            // Each frente points at the client piece that proves it, when there is one;
+            // the studio's own films don't count as proof.
+            const proof = PORTFOLIO.find((p) => p.service === s.title && p.category !== "Estúdio");
             return (
               <Reveal key={s.title} delay={(i % 3) * 90} className="h-full">
                 <article className="flex h-full flex-col border-t border-white/15 pt-7">
