@@ -66,7 +66,7 @@ export function SiteHeader() {
           <a href="#top" className="flex min-w-0 items-center">
             <img
               src="/brand/logo.webp"
-              alt="Future AI Video Labs"
+              alt="Future AI Studios"
               width={529}
               height={200}
               className="h-12 w-auto md:h-14"

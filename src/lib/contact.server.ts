@@ -5,7 +5,7 @@ import { buildConfirmationEmail, buildTeamEmail } from "./contact-email";
 
 export const DEFAULT_CONTACT_TO = "daniel.reis@futureai.consulting";
 // Must be on a domain verified in Resend; CONTACT_FROM_EMAIL overrides it.
-export const DEFAULT_CONTACT_FROM = "Site FutureAI Video <contato@futureailabs.com>";
+export const DEFAULT_CONTACT_FROM = "Site Future AI Studios <contato@futureailabs.com>";
 
 export type ContactConfig = {
   apiKey: string;

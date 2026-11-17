@@ -2,7 +2,7 @@ import type { ContactInput } from "./contact";
 
 export type EmailContent = { subject: string; html: string; text: string };
 
-const BRAND = "Future AI Video Labs";
+const BRAND = "Future AI Studios";
 
 export function escapeHtml(value: string): string {
   return value

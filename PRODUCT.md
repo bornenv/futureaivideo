@@ -56,7 +56,7 @@ Consequência para trabalhos futuros: velocidade e escala são efeitos, não a t
 
 ## Brand Commitments
 
-- Nome: **Future AI Video Labs**. O header e o rodapé usam o logo em `public/brand/logo.webp` (originais em `public/assets/`); com essa troca, o descritor "AI Video Studio" deixou de aparecer no header.
+- Nome: **Future AI Studios** (até nov/2026 era "Future AI Video Labs"; a arte do logo ainda diz "FUTURE AI VIDEO" e precisa ser refeita). O header e o rodapé usam o logo em `public/brand/logo.webp` (originais em `public/assets/`); com essa troca, o descritor "AI Video Studio" deixou de aparecer no header.
 - Contato público: `daniel.reis@futureai.consulting` (também o `email` no JSON-LD de Organization).
 - Idioma e voz: português do Brasil, primeira pessoa do plural, afirmativa e sóbria. Sem exclamação, sem jargão de growth, sem promessa numérica.
 - Visual: a paleta OKLCH e as fontes Outfit/Manrope ficam; texto em gradiente, eyebrows, vidro e numeração decorativa foram removidos em 2026-09-11 e não devem voltar.

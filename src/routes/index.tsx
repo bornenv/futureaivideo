@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { Showcase } from "@/components/site/Showcase";
 import { Hero, About, Services, Method, Ethics, FinalCta } from "@/components/site/sections";
 
-const TITLE = "Future AI Video Labs | IA para Produção Audiovisual";
+const TITLE = "Future AI Studios | IA para Produção Audiovisual";
 const DESCRIPTION =
   "Produção audiovisual com IA generativa e curadoria humana. Vídeos corporativos, campanhas, treinamento e conteúdo de marca, com aprovação antes de cada entrega.";
 
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Future AI Video Labs",
+          name: "Future AI Studios",
           description: DESCRIPTION,
           email: "daniel.reis@futureai.consulting",
         }),

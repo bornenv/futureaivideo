@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Single-page marketing site for **Future AI Video Labs** (AI-assisted audiovisual production studio). Content is in **Brazilian Portuguese**; code identifiers and comments are in English. Built with TanStack Start (SSR) + React 19 + Tailwind v4 + shadcn/ui.
+Single-page marketing site for **Future AI Studios** (AI-assisted audiovisual production studio). Content is in **Brazilian Portuguese**; code identifiers and comments are in English. Built with TanStack Start (SSR) + React 19 + Tailwind v4 + shadcn/ui.
 
 Product facts — audience, positioning, and what the page may and may not claim — live in [PRODUCT.md](PRODUCT.md). Read it before changing copy: the portfolio videos are the only real proof on hand, and no client names, metrics, or certifications exist to cite.
 

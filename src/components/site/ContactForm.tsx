@@ -313,8 +313,8 @@ export function ContactForm() {
             {...register("consent")}
           />
           <span className="text-xs leading-relaxed text-white/65">
-            Autorizo o uso destes dados apenas para que a Future AI Video Labs responda a este
-            contato. Não usamos para newsletter.
+            Autorizo o uso destes dados apenas para que a Future AI Studios responda a este contato.
+            Não usamos para newsletter.
           </span>
         </label>
         <FieldError id="contact-consent-error" message={errors.consent?.message} />

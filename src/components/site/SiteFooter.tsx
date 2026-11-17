@@ -36,7 +36,7 @@ export function SiteFooter() {
           <div className="max-w-sm">
             <img
               src="/brand/logo.webp"
-              alt="Future AI Video Labs"
+              alt="Future AI Studios"
               width={529}
               height={200}
               loading="lazy"
@@ -78,7 +78,7 @@ export function SiteFooter() {
 
         <div className="mt-16 flex flex-col gap-4 border-t border-white/[0.08] pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-white/60">
-            © {new Date().getFullYear()} Future AI Video Labs. Todos os direitos reservados.
+            © {new Date().getFullYear()} Future AI Studios. Todos os direitos reservados.
           </p>
           <a href="#etica" className="text-xs text-white/60 transition-colors hover:text-white">
             Uso responsável de IA

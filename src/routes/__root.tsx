@@ -77,12 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Future AI Video Labs" },
+      { title: "Future AI Studios" },
       {
         name: "description",
         content: "Produção audiovisual potencializada por Inteligência Artificial generativa.",
       },
-      { property: "og:site_name", content: "Future AI Video Labs" },
+      { property: "og:site_name", content: "Future AI Studios" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
