@@ -24,7 +24,7 @@ const input: ContactInput = {
 
 const config: ContactConfig = {
   apiKey: "re_test",
-  from: "Future AI Video Labs <contato@futureai.consulting>",
+  from: "Future AI Studios <contato@futureailabs.com>",
   to: ["daniel.reis@futureai.consulting"],
   sendConfirmation: false,
 };
@@ -178,16 +178,16 @@ describe("readContactConfig", () => {
   it("reads overrides, splitting a comma-separated recipient list", () => {
     const result = readContactConfig({
       RESEND_API_KEY: "re_123",
-      CONTACT_FROM_EMAIL: "Future AI <contato@futureai.consulting>",
-      CONTACT_TO_EMAIL: "a@futureai.consulting, b@futureai.consulting,",
+      CONTACT_FROM_EMAIL: "Future AI <contato@futureailabs.com>",
+      CONTACT_TO_EMAIL: "a@futureailabs.com, b@futureailabs.com,",
       CONTACT_SEND_CONFIRMATION: "TRUE",
     });
     expect(result).toEqual({
       ok: true,
       config: {
         apiKey: "re_123",
-        from: "Future AI <contato@futureai.consulting>",
-        to: ["a@futureai.consulting", "b@futureai.consulting"],
+        from: "Future AI <contato@futureailabs.com>",
+        to: ["a@futureailabs.com", "b@futureailabs.com"],
         sendConfirmation: true,
       },
     });
